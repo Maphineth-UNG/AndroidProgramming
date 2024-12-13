@@ -28,6 +28,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import com.automacorp.R
 import com.automacorp.model.RoomDto
+import com.automacorp.model.RoomViewModel
 import com.automacorp.model.WindowDto
 import com.automacorp.model.WindowStatus
 import com.automacorp.service.RoomService
@@ -55,11 +57,11 @@ class RoomDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val viewModel: RoomDetailViewModel by viewModels()
+        val viewModel: RoomViewModel by viewModels()
         val param = intent.getLongExtra(RoomListActivity.ROOM_PARAM, -1L)
-        if (param != -1L) {
-            viewModel.room = RoomService.findByNameOrId(param.toString())
-        }
+//        if (param != -1L) {
+//            viewModel.room = RoomService.findByNameOrId(param.toString())
+//        }
 
         val onRoomSave: () -> Unit = {
             if (viewModel.room != null) {
@@ -75,6 +77,9 @@ class RoomDetailActivity : ComponentActivity() {
         }
 
         setContent {
+            LaunchedEffect(Unit) {
+                viewModel.findRoom(param)
+            }
             AutomacorpTheme {
                 Scaffold(
                     topBar = { AutomacorpTopAppBar("Room", navigateBack) },
